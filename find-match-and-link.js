@@ -9,7 +9,7 @@ const linkField = table.getField("API: Resource Parent");
 table.selectRecordsAsync()
 
 // Load all of the records in the table
-let allRecords = await table.selectRecordsAsync();
+const allRecords = await table.selectRecordsAsync();
 
 function findRecordByName(name) {
     return allRecords.records.reduce((carry, rec) => {
@@ -20,20 +20,21 @@ function findRecordByName(name) {
 
 // Find every record we need to update
 const recordsWithParent = allRecords.records.filter((record) => record.getCellValueAsString('Resource Parent') != '')// && record.getCellValueAsString('API: Resource Parent') == '')
-const promised = recordsWithParent.map(async record => {
+
+let results = recordsWithParent.map(record => {
     const id = record.id;
     const parent = record.getCellValueAsString('Resource Parent').replace(/"/g, '');
     const linked = record.getCellValueAsString('API: Resource Parent');
     let found = findRecordByName(parent.toLowerCase());
-    if(!found) {
+    if (!found) {
         found = findRecordByName(parent.toLowerCase().replace(/\(.*\)/, '').trim())
     }
-    return Promise.resolve({id, parent, linked, found})
-})
+    return {id, parent, linked, found};
+});
 
-let results = await Promise.all(promised);
-
-results = results.filter(item => !item.found)
+// Show only results that were matched.
+// You can change this to !item.found if you want to view remaining unmatched records
+results = results.filter(item => item.found);
 
 // results.forEach(item => {
 //     table.updateRecordAsync(item.id, {"API: Resource Parent": [item.found]})
