@@ -1,5 +1,8 @@
 /*
  * Airtable Script: automate uploading images from URLs as Attachments
+ *
+ * Based on a reply found in the Airtable Community: https://community.airtable.com/t/url-to-attachment/28569/3
+ * using Script Settings: https://support.airtable.com/hc/en-us/articles/360043041074-Scripting-app-overview
  */
 
 const settings = input.config ({
