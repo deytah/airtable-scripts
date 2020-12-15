@@ -36,16 +36,13 @@ let query = await table.selectRecordsAsync();
 
 for (let record of query.records) {
     // if the attachment field is empty
-    if(record.getCellValue(myAttachment) == null) {
-
-        // since we are using an attachment field...
-        // we create an object, then use array syntax to apply the variable name
-        const info = {a: ''};
-        // delete bypasses syntax error detection
-        delete info.a;
-        info[myAttachment.name] = [
-                { url: record.getCellValue(myURL)}
-            ];
-        await table.updateRecordAsync(record, info);
+    if(record.getCellValue(myURL) && record.getCellValue(myAttachment) == null) {
+        let recordId = await table.updateRecordAsync(record, {
+            [myAttachment.id]: [
+                {url: record.getCellValue(myURL)}
+            ]
+        })
     }
 }
+
+output.text('Click the settings gear to edit Settings for your next Run.')
